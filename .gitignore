@@ -9,7 +9,8 @@ env/
 venv/
 *.sqlite3
 
-# VSCode
-.vscode/
+# Archivos del sistema (Mac)
+.DS_Store
 
+# Notebooks de prueba
 test1.ipynb
