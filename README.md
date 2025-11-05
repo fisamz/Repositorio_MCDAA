@@ -12,6 +12,6 @@ Materia impartida por el doctor [Alberto Benavides](https://github.com/albertobe
 - [Tarea 2](Tarea2/Tarea2.ipynb)
 - [Tarea 3](Tarea3/Tarea3.ipynb)
 - [Tarea 4](Tarea4/Tarea4.ipynb)
-- [Tarea 5](Tarea5/)
+- [Tarea 5 (ipynb)](Tarea5/Tarea5.ipynb) / [Tarea 5 (pdf)](Tarea5/Tarea5_Articulo.pdf) 
 - [Tarea 6](Tarea6/)
 
