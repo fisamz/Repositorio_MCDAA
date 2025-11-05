@@ -1,0 +1,20 @@
+Feature,Importance
+Social Interaction Score,0.16354552122501928
+Sleep Hours,0.15897723785678772
+Screen Time per Day (Hours),0.15217358394231892
+Work Hours per Week,0.14342034161889616
+Age,0.1376860757902485
+Gender_Other,0.0198477959197686
+Stress Level_Low,0.019757395796174748
+Exercise Level_Low,0.01920130667754095
+Stress Level_Moderate,0.01899976809234656
+Gender_Male,0.01895817620705906
+Exercise Level_Moderate,0.017819626199726296
+Mental Health Condition_PTSD,0.017633694002064763
+Mental Health Condition_Bipolar,0.017471966538943416
+Mental Health Condition_Depression,0.016809056706063346
+Mental Health Condition_nan,0.01669376348603477
+Diet Type_Keto,0.01602466915514614
+Diet Type_Junk Food,0.015693259646785803
+Diet Type_Vegan,0.015477809135001755
+Diet Type_Vegetarian,0.013808952004073203
