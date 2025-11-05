@@ -1,0 +1,337 @@
+\documentclass{article}
+\usepackage{graphicx}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}            
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{float}             
+\usepackage{xcolor}
+\usepackage{adjustbox}
+\usepackage{graphicx}   
+
+
+\usepackage[backend=biber,style=apa]{biblatex}
+
+\addto\captionsspanish{%
+  \renewcommand{\tablename}{Tabla}%
+  \renewcommand{\listtablename}{Índice de tablas}%
+}
+
+
+\title{Algoritmos supervisados aplicados a analizar la relación entre la salud mental, hábitos y felicidad.}
+\author{Autor: Fisam Zavala}
+\date{November 2025}
+
+\begin{document}
+\maketitle
+
+
+\section{Introducción}
+
+En el presente trabajo se busca aplicar técnicas de aprendizaje supervisado para el pronóstico de variables relacionadas con el bienestar y los hábitos de vida. El conjunto de datos utilizado, \textit{Mental Health and Lifestyle Dataset}, contiene información sobre variables laborales y conductuales, así como indicadores subjetivos de felicidad y salud mental.
+
+El objetivo general consiste en desarrollar un modelo predictivo capaz de estimar el \textbf{Happiness Score} (nivel de felicidad) a partir de variables explicativas como \textit{Sleep Hours}, \textit{Work Hours per Week}, \textit{Screen Time per Day}, \textit{Social Interaction Score} y otras características del estilo de vida.
+
+Este análisis forma parte de la unidad temática de \textit{Pronóstico}, donde se busca evaluar la capacidad de los modelos supervisados para generalizar patrones y realizar predicciones precisas en contextos reales. Se evaluará la precisión de los modelos mediante métricas estándar de error como el \textbf{MAE (Mean Absolute Error)}, \textbf{RMSE (Root Mean Squared Error)} y \textbf{MSE (Mean Squared Error)}.
+
+
+\section{Algoritmos Supervisados}
+
+Los algoritmos supervisados utilizan un conjunto de datos etiquetados, donde las variables predictoras $X$ se asocian con una variable respuesta $y$. El objetivo es construir una función $f(X)$ capaz de aproximar el valor de $y$ para nuevas observaciones, minimizando el error entre los valores observados y los predichos.
+
+$$
+y_i = f(X_i) + \varepsilon_i, \quad \text{con } \varepsilon_i \sim N(0, \sigma^2)
+$$
+
+A continuación se describen algunos de los algoritmos supervisados más comunes utilizados en problemas de regresión y pronóstico:
+
+\begin{itemize}
+\item \textbf{Regresión Lineal:} busca establecer una relación lineal entre la variable dependiente y las variables independientes. Su formulación matemática general es:
+$$
+\hat{y}*i = \beta_0 + \beta_1 x*{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip}
+$$
+Los coeficientes $\beta_j$ se estiman minimizando la suma de los errores cuadráticos:
+$$
+\min_{\beta} \sum_{i=1}^{n} (y_i - \hat{y}*i)^2 = \min*{\beta} (y - X\beta)'(y - X\beta)
+$$
+La solución analítica se obtiene mediante:
+$$
+\hat{\beta} = (X'X)^{-1}X'y
+$$
+Es un modelo interpretable y constituye la base para la mayoría de los métodos de regresión.
+
+
+\item \textbf{Regresión de Bosques Aleatorios (Random Forest):} es un método de ensamble basado en múltiples árboles de decisión. Cada árbol $T_b$ se entrena sobre una muestra aleatoria $S_b$ del conjunto original. La predicción final se obtiene promediando las salidas de todos los árboles:
+$$
+\hat{y} = \frac{1}{B} \sum_{b=1}^{B} T_b(X)
+$$
+donde $B$ representa el número de árboles en el bosque. Este método reduce la varianza del modelo y mejora la generalización.
+
+\item \textbf{Regresión por Soporte Vectorial (SVR):} busca encontrar una función $f(x)$ que se mantenga dentro de un margen de tolerancia $\epsilon$ respecto a los valores observados. La función objetivo es minimizar:
+$$
+\min_{w,b,\xi_i,\xi_i^*} \frac{1}{2} ||w||^2 + C \sum_{i=1}^{n} (\xi_i + \xi_i^*)
+$$
+sujeto a las restricciones:
+$$
+\begin{cases}
+y_i - (w \cdot x_i + b) \leq \epsilon + \xi_i \\
+(w \cdot x_i + b) - y_i \leq \epsilon + \xi_i^* \\
+\xi_i, \xi_i^* \geq 0
+\end{cases}
+$$
+donde $C$ controla el equilibrio entre la complejidad del modelo y el grado de tolerancia al error.
+
+\item \textbf{Redes Neuronales Artificiales (ANN):} consisten en capas de neuronas que aplican transformaciones no lineales a los datos de entrada. Cada neurona realiza una combinación lineal de los pesos y aplica una función de activación $\phi(\cdot)$:
+$$
+a_j^{(l)} = \phi \left( \sum_{i=1}^{n_{l-1}} w_{ij}^{(l)} a_i^{(l-1)} + b_j^{(l)} \right)
+$$
+donde $l$ indica la capa, $w_{ij}^{(l)}$ los pesos sinápticos y $b_j^{(l)}$ el sesgo. El aprendizaje se realiza mediante retropropagación, minimizando una función de pérdida, comúnmente el error cuadrático medio:
+$$
+L = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2
+$$
+
+
+\end{itemize}
+
+En este estudio se implementarán modelos de tipo \textbf{Regresión Lineal} y \textbf{Bosques Aleatorios} para predecir el \textbf{Happiness Score}, comparando sus resultados con métricas de error como $MAE$, $MSE$ y $RMSE$.
+
+
+\section{Modelo 1: Regresión Lineal}
+
+ primer modelo implementado fue la \textbf{Regresión Lineal Múltiple}, un algoritmo supervisado que asume una relación lineal entre la variable dependiente (\textit{Happiness Score}) y un conjunto de predictores relacionados con hábitos y estilo de vida.
+
+Matemáticamente, este modelo se expresa como:
+$$
+y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip} + \varepsilon_i,
+$$
+donde $\varepsilon_i$ representa el error aleatorio. Los coeficientes $\beta_j$ son estimados minimizando la suma de los errores cuadráticos entre los valores observados y los predichos.
+
+\subsection{Estimación de parámetros}
+
+El modelo fue ajustado utilizando la técnica de mínimos cuadrados ordinarios (OLS) tras un preprocesamiento que incluyó la codificación \textit{one-hot} de variables categóricas y el paso directo de las numéricas. En la Tabla \ref{tab:linreg_coef_sklearn} se presentan los coeficientes obtenidos a través de la librería \texttt{scikit-learn}, mientras que la Tabla \ref{tab:linreg_coef_sm} muestra los resultados del ajuste OLS con los valores de $t$, $p$ y los intervalos de confianza del 95%.
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\input{figures/tabla_coeficientes_sklearn.tex}
+}
+\caption{Coeficientes estimados mediante \texttt{scikit-learn}.}
+\label{tab:linreg_coef_sklearn}
+\end{table}
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\input{figures/tabla_coeficientes_statsmodels.tex}
+}
+\caption{Resultados de la estimación OLS (coeficientes, errores estándar, valores $t$ y $p$).}
+\label{tab:linreg_coef_sm}
+\end{table}
+
+\subsection*{Evaluación del modelo}
+
+En la Figura \ref{fig:1} se muestra la comparación entre los valores observados y los valores predichos por el modelo en el conjunto de prueba. Idealmente, los puntos deberían alinearse con la diagonal $y = x$; sin embargo, en este caso se observa que las predicciones se concentran en una franja horizontal en torno a valores de felicidad promedio (entre 5 y 6 puntos).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/regresion_real_vs_predicho.png}
+\caption{Comparación entre valores observados y predichos por la regresión lineal.}
+\label{fig:1}
+\end{figure}
+
+La Figura \ref{fig:2} muestra la distribución de los residuales, mientras que la Figura \ref{fig:3} presenta su dispersión respecto a los valores ajustados. Ambos gráficos evidencian una alta variabilidad aleatoria y ausencia de estructura clara, lo que sugiere un bajo poder explicativo del modelo.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/regresion_residuales_hist.png}
+\caption{Histograma de residuales del modelo de regresión lineal.}
+\label{fig:2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/regresion_residuales_vs_ajustados.png}
+\caption{Gráfico de residuales versus valores ajustados.}
+\label{fig:3}
+\end{figure}
+
+\subsection*{Discusión}
+
+El análisis de los resultados muestra que la regresión lineal no logra capturar adecuadamente la relación entre las variables predictoras y la variable objetivo. Las predicciones se concentran en torno al promedio del \textit{Happiness Score}, reflejando que el modelo no logra aprender una estructura significativa en los datos. Esto se confirma con la falta de alineación en la gráfica de observados vs. predichos y la dispersión aleatoria de los residuales.
+
+En términos prácticos, el modelo tiende a predecir valores similares para todos los individuos, lo que se traduce en un desempeño deficiente y un coeficiente de determinación ($R^2$) cercano a cero. Esto sugiere que las relaciones entre los hábitos de vida y el bienestar subjetivo podrían ser de naturaleza \textbf{no lineal}, por lo que en la siguiente sección se evaluará un modelo más flexible: el \textbf{Bosque Aleatorio}.
+
+
+\section{Modelo 2: Bosques Aleatorios}
+
+El segundo modelo implementado corresponde al algoritmo de \textbf{Bosques Aleatorios} (\textit{Random Forest Regressor}), una técnica de aprendizaje supervisado basada en el promedio de múltiples árboles de decisión entrenados sobre subconjuntos aleatorios de los datos y de las variables. Este enfoque permite capturar relaciones no lineales y reduce el riesgo de sobreajuste gracias a la combinación de múltiples modelos débiles en un estimador robusto.
+
+Cada árbol del bosque genera una predicción independiente para el \textit{Happiness Score}, y el resultado final se obtiene promediando dichas predicciones. De esta manera, el modelo logra una mayor estabilidad y precisión frente a la regresión lineal.
+
+\subsection{Evaluación del modelo}
+
+La Figura~\ref{fig:4} compara los valores observados y los predichos por el modelo en el conjunto de prueba. Aunque los puntos siguen sin alinearse perfectamente con la diagonal ideal ($y=x$), se aprecia una ligera mejora respecto al modelo lineal, mostrando mayor dispersión vertical y una tendencia más amplia en las predicciones.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/rf_real_vs_predicho.png}
+\caption{Comparación entre valores observados y predichos por el modelo de Bosques Aleatorios.}
+\label{fig:4}
+\end{figure}
+
+El histograma de residuales (Figura~\ref{fig:5}) muestra una distribución más uniforme alrededor de cero, aunque aún con cierta dispersión, lo cual indica que el modelo no presenta un sesgo sistemático importante. Asimismo, el gráfico de residuales contra valores ajustados (Figura~\ref{fig:6}) evidencia una dispersión aleatoria, lo que sugiere homocedasticidad y una mejora en la capacidad del modelo para ajustarse a distintos niveles de la variable dependiente.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/rf_residuales_hist.png}
+\caption{Histograma de residuales del modelo de Bosques Aleatorios.}
+\label{fig:5}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/rf_residuales_vs_ajustados.png}
+\caption{Residuales versus valores ajustados para el modelo de Bosques Aleatorios.}
+\label{fig:6}
+\end{figure}
+
+\subsection{Importancia de las variables}
+
+Una ventaja del modelo de Bosques Aleatorios es su capacidad para estimar la \textit{importancia de las variables}, medida a partir de la reducción media de la impureza (\textit{Mean Decrease in Impurity}) en los árboles que conforman el bosque. En la Tabla~\ref{tab:3} se presenta el ranking de las 20 variables más relevantes, mientras que la Figura~\ref{fig:7} ilustra visualmente su contribución al modelo.
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\input{figures/tabla_importancias_rf.tex}
+}
+\caption{Importancia de variables estimadas por el modelo de Bosques Aleatorios.}
+\label{tab:3}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/rf_importancias_top.png}
+\caption{Importancia relativa de las 20 variables más influyentes en el modelo de Bosques Aleatorios.}
+\label{fig:7}
+\end{figure}
+
+Los resultados indican que las variables con mayor peso en la predicción de la felicidad son \textit{Social Interaction Score}, \textit{Sleep Hours}, \textit{Screen Time per Day (Hours)} y \textit{Work Hours per Week}, seguidas de la edad y algunas categorías de género y nivel de estrés. Estas variables reflejan dimensiones clave del estilo de vida que influyen en el bienestar subjetivo, especialmente la interacción social y el descanso adecuado.
+
+\subsection*{Discusión}
+
+En comparación con la regresión lineal, el modelo de Bosques Aleatorios muestra un ajuste más flexible y una mejor capacidad para capturar patrones no lineales. Aunque aún existe dispersión en las predicciones, la estructura de los residuales sugiere una mejora en la generalización. Además, el análisis de importancia de variables ofrece una interpretación intuitiva de los factores que más contribuyen al \textit{Happiness Score}, aportando evidencia empírica sobre la relevancia de las horas de sueño, la interacción social y el equilibrio laboral.
+
+En general, el Bosque Aleatorio representa una mejora moderada frente al modelo lineal, sirviendo como un punto intermedio entre la interpretabilidad y el poder predictivo dentro de los métodos supervisados considerados.
+
+
+\section{Métricas de análisis del error}
+
+Con el objetivo de comparar el desempeño de los modelos entrenados, se calcularon las métricas de error más utilizadas en regresión: el error absoluto medio (MAE), el error cuadrático medio (MSE), la raíz del error cuadrático medio (RMSE) y el coeficiente de determinación ($R^2$). Estas medidas permiten evaluar la precisión y capacidad de generalización de cada modelo sobre el conjunto de prueba.
+
+\subsection{Resultados comparativos}
+
+En el Cuadro~\ref{tab:metricas_comparativas} se presentan las métricas obtenidas para la Regresión Lineal y el Bosque Aleatorio. En términos generales, se observa que ambos modelos presentan valores similares de error, aunque con ligeras diferencias en $R^2$ y la dispersión de los residuales.
+
+\begin{table}[H]
+\centering
+\resizebox{0.8\textwidth}{!}{%
+  \input{figures/tabla_metricas_comparativas.tex}
+}
+\caption{Métricas de desempeño de los modelos de Regresión Lineal y Bosque Aleatorio.}
+\label{tab:metricas_comparativas}
+\end{table}
+
+\subsection{Visualización del desempeño}
+
+En la Figura~\ref{fig:errores_bar} se comparan las magnitudes promedio de los errores MAE y RMSE. Ambas métricas reflejan el nivel promedio de desviación entre los valores observados y los predichos, mostrando que los errores del Bosque Aleatorio son ligeramente superiores, aunque las diferencias no son significativas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/comparacion_errores_bar.png}
+    \caption{Comparación de errores medios (MAE y RMSE) para los modelos de Regresión Lineal y Bosque Aleatorio.}
+    \label{fig:errores_bar}
+\end{figure}
+
+Por su parte, la Figura~\ref{fig:r2_bar} muestra el coeficiente de determinación ($R^2$) de ambos modelos. Aunque los valores son cercanos a cero, el modelo de Bosque Aleatorio presenta un desempeño ligeramente mejor, lo cual sugiere una capacidad marginalmente mayor para explicar la variabilidad de la variable objetivo.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/comparacion_r2_bar.png}
+    \caption{Coeficiente de determinación ($R^2$) para los modelos analizados.}
+    \label{fig:r2_bar}
+\end{figure}
+
+Finalmente, la Figura~\ref{fig:violin_errores} ilustra la distribución de los errores absolutos individuales mediante un gráfico de violín. Este tipo de visualización permite observar la dispersión y densidad de los errores: ambos modelos presentan distribuciones simétricas centradas alrededor de valores bajos, sin sesgos evidentes, aunque el Bosque Aleatorio muestra una ligera concentración de errores más pequeños, indicando una mejor estabilidad en las predicciones.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/violin_errores.png}
+    \caption{Distribución del error absoluto por modelo.}
+    \label{fig:violin_errores}
+\end{figure}
+
+\subsection{Discusión}
+
+Los resultados evidencian que ambos modelos poseen un desempeño comparable. La Regresión Lineal ofrece interpretabilidad y simplicidad, pero no captura posibles relaciones no lineales entre las variables explicativas y el \textit{Happiness Score}. El Bosque Aleatorio, en cambio, aunque presenta una ligera mejora en las métricas de error y estabilidad en los residuales, podría estar limitado por la falta de complejidad o por la homogeneidad del conjunto de datos.
+
+En conclusión, el Bosque Aleatorio logra un ajuste marginalmente superior, evidenciado por un menor error absoluto promedio y un $R^2$ ligeramente mayor, lo que sugiere una mejor capacidad de generalización frente a la Regresión Lineal. Sin embargo, las diferencias no son estadísticamente significativas, por lo que ambos métodos resultan válidos bajo el contexto y la calidad de los datos disponibles.
+
+
+\section{Conclusiones generales}
+
+El presente estudio permitió evaluar y comparar dos enfoques de modelado para la predicción del \textit{Happiness Score}: un modelo de \textbf{Regresión Lineal Múltiple} y un modelo de \textbf{Bosques Aleatorios}. Ambos fueron entrenados sobre el mismo conjunto de variables de estilo de vida, con el objetivo de identificar patrones que expliquen las diferencias en el nivel de felicidad de los individuos.
+
+\subsection{Comparación de los modelos}
+
+La Regresión Lineal presentó un desempeño moderado, con errores promedio (MAE y RMSE) dentro de un rango aceptable pero con un coeficiente de determinación ($R^2$) cercano a cero. Esto sugiere que la relación entre las variables independientes y la variable objetivo no sigue una estructura lineal simple, por lo que el modelo lineal no logra capturar adecuadamente las interacciones entre los predictores.
+
+El Bosque Aleatorio, al ser un modelo de naturaleza no paramétrica y capaz de capturar relaciones no lineales, mostró una ligera mejora en los indicadores de error y una distribución más estable de los residuales. Además, el análisis de importancia de variables reveló que los factores con mayor contribución al nivel de felicidad fueron \textbf{la interacción social}, \textbf{las horas de sueño}, \textbf{el tiempo frente a pantalla} y \textbf{las horas de trabajo por semana}, lo que coincide con la literatura sobre bienestar subjetivo.
+
+\subsection{Conclusión final}
+
+En términos generales, aunque ambos modelos lograron capturar parcialmente el comportamiento del \textit{Happiness Score}, el \textbf{Bosque Aleatorio} demostró ser más robusto y ligeramente más preciso que la Regresión Lineal. Sin embargo, las diferencias en desempeño fueron pequeñas, lo que sugiere que la variabilidad de la felicidad podría depender de factores no observados o de relaciones más complejas que las contenidas en el conjunto de datos.
+
+\renewcommand{\refname}{Referencias}
+\begin{thebibliography}{9}
+\bibitem{JPMS2023}
+Khan, A., Ali, M. (2023). 
+\textit{Can Lifestyle Habits Predict Happiness? An Exploratory Machine Learning Study Using a Visual Data Mining Platform.} 
+\textit{Journal of Pakistan Medical Students (JPMS).} 
+Recuperado de \url{https://jpmsonline.com/article/can-lifestyle-habits-predict-happiness-an-exploratory-machine-learning-study-using-a-visual-data-mining-platform-755}
+
+\bibitem{BMC2019}
+Steptoe, A., Wardle, J. (2019). 
+\textit{Prospective Associations of Happiness and Optimism with Lifestyle Habits and Health Outcomes.} 
+\textit{BMC Public Health.} 
+Recuperado de \url{https://pmc.ncbi.nlm.nih.gov/articles/PMC6697576/}
+
+\bibitem{Preventive2021}
+Schnettler, B., Miranda-Zapata, E. (2021). 
+\textit{Subjective Well-being Predicts Health Behavior in a 9-Years Follow-up.} 
+\textit{Preventive Medicine Reports.} 
+Recuperado de \url{https://www.sciencedirect.com/science/article/pii/S2211335521003260}
+
+\bibitem{Nature2025}
+Park, J., Kim, S. (2025). 
+\textit{Graphical Model Analysis of Subjective Well-being and Various Factors.} 
+\textit{Scientific Reports (Nature Portfolio).} 
+Recuperado de \url{https://www.nature.com/articles/s41598-025-98064-2}
+
+\bibitem{IJQW2023}
+Thompson, C., Lee, Y. (2023). 
+\textit{The Relationship Between Subjective Well-being and Food: A Qualitative Study of Children’s Perspectives.} 
+\textit{International Journal of Qualitative Studies on Health and Well-being.} 
+Recuperado de \url{https://www.tandfonline.com/doi/full/10.1080/17482631.2023.2189218}
+\end{thebibliography}
+
+\end{document}
