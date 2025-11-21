@@ -16,6 +16,6 @@ Materia impartida por el doctor [Alberto Benavides](https://github.com/albertobe
 - [Tarea 6 (ipynb)](Tarea6/Tarea6.ipynb) / [Tarea 6 (pdf)](Tarea6/Tarea6_Articulo.pdf) / [Tarea 6 (latex)](Tarea6/Tarea6_LatexFile.tex)
 - [Tarea 7](Tarea7/Tarea7_Articulo.pdf)
 - [Tarea 8-9](Tarea8-9/Tarea8-9_Articulo.pdf)
-- [Articulo](Articulo/Articulo - Aprendizaje Automatico - FZH.pdf)
+- [Articulo](Articulo/Articulo_Aprendizaje_Automatico_FZH.pdf)
 
 
